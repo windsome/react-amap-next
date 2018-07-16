@@ -9,6 +9,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {};
+    this._mapDblclick = this._mapDblclick.bind(this);
   }
 
   componentDidMount() {
@@ -19,8 +20,12 @@ class App extends Component {
         autoRefresh: true, //是否自动刷新，默认为false
         interval: 5 //刷新间隔，默认180s
       });
-      this.setState({ AMap, layers: [satellite, roadNet, traffic] });
+      this.setState({ AMap, layers: [roadNet, traffic] });
     });
+  }
+
+  _mapDblclick() {
+    this.setState({msg:'双击了Map!'});
   }
 
   render() {
@@ -52,17 +57,27 @@ class App extends Component {
             北京-2
           </span>
         </div>
+        <div style={{margin:2}}>
+          {'消息:'+this.state.msg}
+        </div>
         <Map
           AMap={this.state.AMap}
-          options={{ center: this.state.center, layers: this.state.layers }}
           style={{ width: 700, height: 800 }}
-        >
+          options={{ center: this.state.center, layers: this.state.layers }}
+          events={{
+            click:e=>this.setState({msg: '点击了Map'}),
+            dblclick: this._mapDblclick,
+          }}
+      >
           {this.state.showMarker &&
           <Marker
             AMap={this.state.AMap}
             options={{
               icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
               position: this.state.position || [116.405467, 39.907761]
+            }}
+            events={{
+              click:e=>this.setState({msg: '点击了Marker1'}),
             }}
           >
           </Marker>
@@ -73,6 +88,9 @@ class App extends Component {
               icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
               position: [116.406467, 39.908761],
               content:'<div class="marker-route marker-marker-bus-from"></div>'
+            }}
+            events={{
+              click:e=>this.setState({msg: '点击了Marker2'})
             }}
           >
           </Marker>

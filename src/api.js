@@ -1,5 +1,6 @@
 import forOwn from 'lodash/forOwn';
 import isEqual from 'lodash/isEqual';
+import isNil from 'lodash/isNil';
 import loadjscssfile from './loadScript';
 
 export const loadApi = async (key = '0325e3d6d69cd56de4980b4f28906fd8') => {
@@ -78,6 +79,7 @@ export const createMap = (AMap, dom, options, events) => {
   }
   let map = new AMap.Map(dom, { ...(options || {}) });
   forOwn(events, (value, key) => {
+    console.log('createMap event on ' + key);
     map.on(key, value);
   });
   console.log('createMap ok!');
@@ -104,15 +106,15 @@ export const updateMap = (
         // 找到改变的旧属性,用新属性取代
         let newValue = newOptions && newOptions[key];
         if (!isEqual(newValue, value)) {
-          //if (newValue != value) {
-          props[key] = newValue;
+          if (!(isNil(newValue) && isNil(value)))
+            props[key] = newValue;
         }
       });
     newOptions &&
       forOwn(newOptions, (value, key) => {
         // 找到新加的属性,添加进去
         let oldValue = oldOptions && oldOptions[key];
-        if (oldValue == null) {
+        if (isNil(oldValue) && !isNil(value)) {
           props[key] = value;
         }
       });
@@ -125,15 +127,15 @@ export const updateMap = (
         // 找到改变的旧属性,用新属性取代
         let newValue = newEvents && newEvents[key];
         if (!isEqual(newValue, value)) {
-          //if (newValue != value) {
-          events[key] = newValue;
+          if (!(isNil(newValue) && isNil(value)))
+            events[key] = newValue;
         }
       });
     newEvents &&
       forOwn(newEvents, (value, key) => {
         // 找到新加的属性,添加进去
         let oldValue = oldEvents && oldEvents[key];
-        if (oldValue == null) {
+        if (isNil(oldValue) && !isNil(value)) {
           events[key] = value;
         }
       });
@@ -193,9 +195,11 @@ export const updateMap = (
   forOwn(events, (value, key) => {
     let oldFunc = oldEvents && oldEvents[key];
     if (oldFunc) {
+      console.log('updateMap: event off ' + key);
       map.off(key, oldFunc);
     }
     if (value) {
+      console.log('updateMap: event on ' + key);
       map.on(key, value);
     }
   });
