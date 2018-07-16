@@ -271,15 +271,15 @@ export const updateMarker = (
         // 找到改变的旧属性,用新属性取代
         let newValue = newOptions && newOptions[key];
         if (!isEqual(newValue, value)) {
-          //if (newValue != value) {
-          props[key] = newValue;
+          if (!(isNil(newValue) && isNil(value)))
+            props[key] = newValue;
         }
       });
     newOptions &&
       forOwn(newOptions, (value, key) => {
         // 找到新加的属性,添加进去
         let oldValue = oldOptions && oldOptions[key];
-        if (oldValue == null) {
+        if (isNil(oldValue) && !isNil(value)) {
           props[key] = value;
         }
       });
@@ -292,15 +292,15 @@ export const updateMarker = (
         // 找到改变的旧属性,用新属性取代
         let newValue = newEvents && newEvents[key];
         if (!isEqual(newValue, value)) {
-          //if (newValue != value) {
-          events[key] = newValue;
+          if (!(isNil(newValue) && isNil(value)))
+            events[key] = newValue;
         }
       });
     newEvents &&
       forOwn(newEvents, (value, key) => {
         // 找到新加的属性,添加进去
         let oldValue = oldEvents && oldEvents[key];
-        if (oldValue == null) {
+        if (isNil(oldValue) && !isNil(value)) {
           events[key] = value;
         }
       });
