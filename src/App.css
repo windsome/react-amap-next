@@ -1,0 +1,11 @@
+.amap-marker .marker-route {
+  position: absolute;
+  width: 40px;
+  height: 44px;
+  color: #e90000;
+  background: url(https://webapi.amap.com/theme/v1.3/images/newpc/poi-1.png) no-repeat;
+  cursor: pointer;
+}
+.amap-marker .marker-marker-bus-from {
+  background-position: -334px -180px;
+}
