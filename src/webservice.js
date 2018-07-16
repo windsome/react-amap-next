@@ -1,6 +1,7 @@
 import forOwn from 'lodash/forOwn';
 import isEqual from 'lodash/isEqual';
 import isNil from 'lodash/isNil';
+import isUndefined from 'lodash/isUndefined';
 
 // M: Mandatory,必选
 // api调用限流说明: https://lbs.amap.com/api/webservice/guide/tools/flowlevel
@@ -331,7 +332,7 @@ export const services = {
       sp: undefined // M
     }
   },
-  
+
 }
 
 export const infocode = {
@@ -350,4 +351,46 @@ export const infocode = {
     desc: '没有权限使用相应的服务或者请求接口的路径拼写错误',
     suggest: '1.开发者没有权限使用相应的服务，例如：开发者申请了WEB定位功能的key，却使用该key访问逆地理编码功能时，就会返回该错误。反之亦然。2.开发者请求接口的路径拼写错误。例如：正确的https://restapi.amap.com/v3/ip在程序中被拼装写了https://restapi.amap.com/vv3/ip"'
   },
+}
+
+export const getRequest = (service, parameters, body) => {
+  if (!service) return null;
+
+  let option = {};
+  let { name, url, method, parameters: dfParameters, body: dfBody } = service;
+  let destParameters = { ...(dfParameters||{}), ...(parameters||{}) };
+
+  // 组建url中参数
+  let paramArr = [];
+  forOwn(destParameters, (value, key) => {
+    if (!isNil(value)) {
+      paramArr.push (key+'='+value);
+    }
+  });
+  if (paramArr.length > 0) {
+    url += '?'+paramArr.join('&');
+  }
+  // 组建option
+  if (method === 'GET') {
+    option = {
+      credentials: 'include',
+      method,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  } else if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+    let destBody = { ...(dfBody||{}), ...(body||{}) };
+    option = {
+      credentials: 'include',
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: destBody
+    }
+  } else {
+    console.log('error! not support method='+method+' of '+name);
+  }
+
+  return {
+    url, 
+    option
+  }
 }
