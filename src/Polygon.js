@@ -1,9 +1,11 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { createMassMarks, updateMassMarks } from './api';
-const __com__ = 'MassMarks';
+import { createPolygon, updatePolygon } from './api';
+const __com__ = 'Polygon';
+//const debug = console.log;
+const debug = () => {};
 
-export class MassMarks extends Component {
+export class Polygon extends Component {
   static propTypes = {
     AMap: PropTypes.object,
     __map__: PropTypes.object,
@@ -15,36 +17,36 @@ export class MassMarks extends Component {
     super();
     this.refElement = null;
     this._entity = null;
-    console.log(__com__, 'constructor', this._entity);
+    debug(__com__, 'constructor', this._entity);
   }
 
   componentWillMount() {
-    console.log(__com__, 'componentWillMount', this.props.children, this._entity);
+    debug(__com__, 'componentWillMount', this._entity);
   }
 
   componentDidMount() {
-    console.log(__com__, 'componentDidMount', this.props.children, this._entity);
+    debug(__com__, 'componentDidMount', this._entity);
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
-    this._entity = createMassMarks(AMap, opts, events);
+    this._entity = createPolygon(AMap, opts, events);
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(__com__, 'componentWillReceiveProps', this.props.children, this._entity);
+    debug(__com__, 'componentWillReceiveProps', this._entity);
   }
 
   componentWillUpdate() {
-    console.log(__com__, 'componentWillUpdate', this.props.children, this._entity);
+    debug(__com__, 'componentWillUpdate', this._entity);
   }
 
   componentDidUpdate(prevProps) {
-    console.log(__com__, 'componentDidUpdate', this.props.children, this._entity);
+    debug(__com__, 'componentDidUpdate', this._entity);
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
     if (!this._entity) {
-      this._entity = createMassMarks(AMap, opts, events);
+      this._entity = createPolygon(AMap, opts, events);
       return;
     }
 
@@ -53,11 +55,11 @@ export class MassMarks extends Component {
       ...(prevProps.options || {}),
       map: prevProps.__map__
     };
-    updateMassMarks(this._entity, opts, events, oldOpts, prevProps.events);
+    updatePolygon(this._entity, opts, events, oldOpts, prevProps.events);
   }
 
   componentWillUnmount() {
-    console.log(__com__, 'componentWillUnmount', this.props.children, this._entity);
+    debug(__com__, 'componentWillUnmount', this._entity);
     if (this._entity) {
       //   this._entity.clearMap();
       this._entity.setMap(null);
@@ -68,7 +70,7 @@ export class MassMarks extends Component {
   }
 
   render() {
-    console.log(__com__, 'render', this.props.children, this._entity);
+    debug(__com__, 'render', this._entity);
     let {
       AMap,
       options,
@@ -87,4 +89,4 @@ export class MassMarks extends Component {
   }
 }
 
-export default MassMarks;
+export default Polygon;

@@ -35,6 +35,9 @@ export class Marker extends Component {
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
     this._entity = createMarker(AMap, opts, events);
+    if (this._entity) {
+      if (this.props.refer) this.props.refer(this._entity);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,6 +55,9 @@ export class Marker extends Component {
     let opts = { ...(options || {}), map: __map__ };
     if (!this._entity) {
       this._entity = createMarker(AMap, opts, events);
+      if (this._entity) {
+        if (this.props.refer) this.props.refer(this._entity);
+      }
       return;
     }
 
@@ -80,6 +86,7 @@ export class Marker extends Component {
     let {
       AMap,
       options,
+      events,
       match,
       location,
       history,

@@ -93,9 +93,10 @@ export const commonUpdate = (
   newEvents,
   oldOptions,
   oldEvents,
-  operators
+  operators,
+  __func__ = 'commonUpdate'
 ) => {
-  const __func__ = 'commonUpdate';
+  // const __func__ = 'commonUpdate';
   if (!entity) {
     console.log(__func__, 'fail! no entity!');
     return false;
@@ -195,10 +196,10 @@ export const commonUpdate = (
     __func__, 'update:',
     props,
     events,
-    newOptions,
-    newEvents,
-    oldOptions,
-    oldEvents
+    // newOptions,
+    // newEvents,
+    // oldOptions,
+    // oldEvents
   );
   return true;
 };
@@ -252,7 +253,8 @@ export const updateMap = (
     newEvents,
     oldOptions,
     oldEvents,
-    operators
+    operators,
+    'updateMap'
   )
 };
 
@@ -285,12 +287,12 @@ export const createMarker = (AMap, options, events) => {
   //   position: [116.405467, 39.907761]
   // });
   // marker.setMap(map);
-  let marker = new AMap.Marker(options);
+  let entity = new AMap.Marker(options);
   forOwn(events, (value, key) => {
-    marker.on(key, value);
+    entity.on(key, value);
   });
   console.log(__func__, 'ok!');
-  return marker;
+  return entity;
 };
 
 export const updateMarker = (
@@ -330,7 +332,8 @@ export const updateMarker = (
     newEvents,
     oldOptions,
     oldEvents,
-    operators
+    operators,
+    'updateMarker'
   )
 };
 
@@ -390,6 +393,149 @@ export const updateMassMarks = (
     newEvents,
     oldOptions,
     oldEvents,
-    operators
+    operators,
+    'updateMassMarks'
   )
 };
+
+////////////////////////////////////////////////////////////
+// Polygon
+////////////////////////////////////////////////////////////
+/**
+ *
+ * @param {*} AMap
+ * @param {*} map
+ * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
+ * @param {*} events
+ */
+export const createPolygon = (AMap, options, events) => {
+  const __func__ = 'createPolygon';
+  if (!AMap) {
+    console.log(__func__, 'fail! no AMap!');
+    return null;
+  }
+  if (!options) {
+    console.log(__func__, 'fail! no options!');
+    return null;
+  }
+  if (!options.map) {
+    console.log(__func__, 'fail! no options.map!');
+    return null;
+  }
+  let entity = new AMap.Polygon(options);
+  forOwn(events, (value, key) => {
+    entity.on(key, value);
+  });
+  console.log(__func__, 'ok!');
+  return entity;
+};
+
+export const updatePolygon = (
+  entity,
+  newOptions,
+  newEvents,
+  oldOptions,
+  oldEvents
+) => {
+  let operators = {
+    map: v => entity.setMap(v),
+    zIndex: v => entity.setzIndex(v),
+    path: v => entity.setPath(v),
+    bubble: null,
+    cursor: null,
+    strokeColor: null,
+    strokeOpacity: null,
+    strokeWeight: null,
+    fillColor: null,
+    fillOpacity: null,
+    draggable: null,
+    extData: v => entity.setExtData(v),
+    strokeStyle: null,
+    strokeDasharray: null,
+    options: v => entity.setOptions(v)
+  };
+
+  return commonUpdate (
+    entity,
+    newOptions,
+    newEvents,
+    oldOptions,
+    oldEvents,
+    operators,
+    'updatePolygon'
+  )
+};
+
+////////////////////////////////////////////////////////////
+// Polyline
+////////////////////////////////////////////////////////////
+/**
+ *
+ * @param {*} AMap
+ * @param {*} map
+ * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
+ * @param {*} events
+ */
+export const createPolyline = (AMap, options, events) => {
+  const __func__ = 'createPolyline';
+  if (!AMap) {
+    console.log(__func__, 'fail! no AMap!');
+    return null;
+  }
+  if (!options) {
+    console.log(__func__, 'fail! no options!');
+    return null;
+  }
+  if (!options.map) {
+    console.log(__func__, 'fail! no options.map!');
+    return null;
+  }
+  let entity = new AMap.Polyline(options);
+  forOwn(events, (value, key) => {
+    entity.on(key, value);
+  });
+  console.log(__func__, 'ok!');
+  return entity;
+};
+
+export const updatePolyline = (
+  entity,
+  newOptions,
+  newEvents,
+  oldOptions,
+  oldEvents
+) => {
+  let operators = {
+    map: v => entity.setMap(v),
+    zIndex: v => entity.setzIndex(v),
+    bubble: null,
+    cursor: null,
+    gedodesic: null,
+    isOutline: null,
+    borderWeight: null,
+    outlineColor: null,
+    path: v => entity.setPath(v),
+    strokeColor: null,
+    strokeOpacity: null,
+    strokeWeight: null,
+    strokeStyle: null,
+    strokeDasharray: null,
+    lineJoin: null,
+    lineCap: null,
+    draggable: null,
+    extData: v => entity.setExtData(v),
+    showDir: null,
+    options: v => entity.setOptions(v)
+  };
+
+  return commonUpdate (
+    entity,
+    newOptions,
+    newEvents,
+    oldOptions,
+    oldEvents,
+    operators,
+    'updatePolyline'
+  )
+};
+
