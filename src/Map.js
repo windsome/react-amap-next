@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { loadMap, createMap, updateMap } from './api';
 
 const __com__ = 'Map';
+//const debug = console.log;
+const debug = () => {};
 
 export class Map extends Component {
   static propTypes = {
@@ -22,15 +24,15 @@ export class Map extends Component {
     super();
     this.refElement = null;
     this._entity = null;
-    console.log(__com__, 'component constructor', this.refElement, this._entity);
+    debug(__com__, 'component constructor', this.refElement, this._entity);
   }
 
   componentWillMount() {
-    console.log(__com__, 'componentWillMount', this.refElement, this._entity);
+    debug(__com__, 'componentWillMount', this.refElement, this._entity);
   }
 
   componentDidMount() {
-    console.log(__com__, 'componentDidMount', this.refElement, this._entity);
+    debug(__com__, 'componentDidMount', this.refElement, this._entity);
     let { AMap, refMap, options, events } = this.props;
     this._entity = createMap(AMap, this.refElement, options, events);
     if (this._entity) {
@@ -40,15 +42,15 @@ export class Map extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(__com__, 'componentWillReceiveProps', this.refElement, this._entity);
+    debug(__com__, 'componentWillReceiveProps', this.refElement, this._entity);
   }
 
   componentWillUpdate() {
-    console.log(__com__, 'componentWillUpdate', this.refElement, this._entity);
+    debug(__com__, 'componentWillUpdate', this.refElement, this._entity);
   }
 
   componentDidUpdate(prevProps) {
-    console.log(__com__, 'componentDidUpdate', this.refElement, this._entity);
+    debug(__com__, 'componentDidUpdate', this.refElement, this._entity);
     let { AMap, refMap, options, events } = this.props;
     if (!this._entity) {
       this._entity = createMap(AMap, this.refElement, options, events);
@@ -70,7 +72,7 @@ export class Map extends Component {
   }
 
   componentWillUnmount() {
-    console.log(__com__, 'componentWillUnmount', this.refElement, this._entity);
+    debug(__com__, 'componentWillUnmount', this.refElement, this._entity);
     if (this._entity) {
       let { refMap } = this.props;
       //   this._entity.clearMap();
@@ -90,21 +92,21 @@ export class Map extends Component {
          * 2. DOM 元素
          */
         if (cType.preventAmap || typeof cType === 'string') {
-          console.log(__com__, 'component renderChildren orig');
+          debug(__com__, 'component renderChildren orig');
           return child;
         }
-        console.log(__com__, 'component renderChildren add __map__');
+        debug(__com__, 'component renderChildren add __map__');
         return React.cloneElement(child, {
           __map__
         });
       }
-      console.log(__com__, 'component renderChildren null');
+      debug(__com__, 'component renderChildren null');
       return child;
     });
   }
 
   render() {
-    console.log(__com__, 'component render', this.refElement, this._entity);
+    debug(__com__, 'component render', this.refElement, this._entity);
     let {
       AMap,
       options,

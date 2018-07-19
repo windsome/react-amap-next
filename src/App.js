@@ -88,7 +88,7 @@ class MarkerTest extends Component {
         </div>
         <div style={{margin:2}}>
           <input style={{margin:2, padding:2}} type='button' onClick={() => {
-            if (this.state.carEntity) this.state.carEntity.moveAlong(this.state.lineArr, 500);
+            if (this.state.carEntity) this.state.carEntity.moveAlong(this.state.lineArr, 1500);
           }} value='开始' />
           <input style={{margin:2, padding:2}} type='button' onClick={() => {
             if (this.state.carEntity) this.state.carEntity.pauseMove();

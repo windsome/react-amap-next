@@ -2,6 +2,8 @@ import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { createMassMarks, updateMassMarks } from './api';
 const __com__ = 'MassMarks';
+//const debug = console.log;
+const debug = () => {};
 
 export class MassMarks extends Component {
   static propTypes = {
@@ -15,15 +17,15 @@ export class MassMarks extends Component {
     super();
     this.refElement = null;
     this._entity = null;
-    console.log(__com__, 'constructor', this._entity);
+    debug(__com__, 'constructor', this._entity);
   }
 
   componentWillMount() {
-    console.log(__com__, 'componentWillMount', this.props.children, this._entity);
+    debug(__com__, 'componentWillMount', this.props.children, this._entity);
   }
 
   componentDidMount() {
-    console.log(__com__, 'componentDidMount', this.props.children, this._entity);
+    debug(__com__, 'componentDidMount', this.props.children, this._entity);
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
@@ -31,15 +33,15 @@ export class MassMarks extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(__com__, 'componentWillReceiveProps', this.props.children, this._entity);
+    debug(__com__, 'componentWillReceiveProps', this.props.children, this._entity);
   }
 
   componentWillUpdate() {
-    console.log(__com__, 'componentWillUpdate', this.props.children, this._entity);
+    debug(__com__, 'componentWillUpdate', this.props.children, this._entity);
   }
 
   componentDidUpdate(prevProps) {
-    console.log(__com__, 'componentDidUpdate', this.props.children, this._entity);
+    debug(__com__, 'componentDidUpdate', this.props.children, this._entity);
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
@@ -57,7 +59,7 @@ export class MassMarks extends Component {
   }
 
   componentWillUnmount() {
-    console.log(__com__, 'componentWillUnmount', this.props.children, this._entity);
+    debug(__com__, 'componentWillUnmount', this.props.children, this._entity);
     if (this._entity) {
       //   this._entity.clearMap();
       this._entity.setMap(null);
@@ -68,7 +70,7 @@ export class MassMarks extends Component {
   }
 
   render() {
-    console.log(__com__, 'render', this.props.children, this._entity);
+    debug(__com__, 'render', this.props.children, this._entity);
     let {
       AMap,
       options,

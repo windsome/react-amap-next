@@ -2,6 +2,8 @@ import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { createMarker, updateMarker } from './api';
 const __component__ = 'Marker';
+//const debug = console.log;
+const debug = () => {};
 
 export class Marker extends Component {
   static propTypes = {
@@ -22,15 +24,15 @@ export class Marker extends Component {
     super();
     this.refElement = null;
     this._entity = null;
-    console.log(__component__, 'constructor', this._entity);
+    debug(__component__, 'constructor', this._entity);
   }
 
   componentWillMount() {
-    console.log(__component__, 'componentWillMount', this.props.children, this._entity);
+    debug(__component__, 'componentWillMount', this.props.children, this._entity);
   }
 
   componentDidMount() {
-    console.log(__component__, 'componentDidMount', this.props.children, this._entity);
+    debug(__component__, 'componentDidMount', this.props.children, this._entity);
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
@@ -41,15 +43,15 @@ export class Marker extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(__component__, 'componentWillReceiveProps', this.props.children, this._entity);
+    debug(__component__, 'componentWillReceiveProps', this.props.children, this._entity);
   }
 
   componentWillUpdate() {
-    console.log(__component__, 'componentWillUpdate', this.props.children, this._entity);
+    debug(__component__, 'componentWillUpdate', this.props.children, this._entity);
   }
 
   componentDidUpdate(prevProps) {
-    console.log(__component__, 'componentDidUpdate', this.props.children, this._entity);
+    debug(__component__, 'componentDidUpdate', this.props.children, this._entity);
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
@@ -71,7 +73,7 @@ export class Marker extends Component {
   }
 
   componentWillUnmount() {
-    console.log(__component__, 'componentWillUnmount', this.props.children, this._entity);
+    debug(__component__, 'componentWillUnmount', this.props.children, this._entity);
     if (this._entity) {
       //   this._entity.clearMap();
       this._entity.setMap(null);
@@ -82,7 +84,7 @@ export class Marker extends Component {
   }
 
   render() {
-    console.log(__component__, 'render', this.props.children, this._entity);
+    debug(__component__, 'render', this.props.children, this._entity);
     let {
       AMap,
       options,
