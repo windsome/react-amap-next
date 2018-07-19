@@ -69,32 +69,35 @@ export const loadPlugin = name => {
 // Map
 ////////////////////////////////////////////////////////////
 export const createMap = (AMap, dom, options, events) => {
+  const __func__ = 'createMap';
   if (!AMap) {
-    console.log('createMap fail! no AMap!');
+    console.log(__func__, 'fail! no AMap!');
     return null;
   }
   if (!dom) {
-    console.log('createMap fail! no dom!');
+    console.log(__func__, 'fail! no dom!');
     return null;
   }
   let map = new AMap.Map(dom, { ...(options || {}) });
   forOwn(events, (value, key) => {
-    console.log('createMap event on ' + key);
+    console.log(__func__, 'event on ' + key);
     map.on(key, value);
   });
-  console.log('createMap ok!');
+  console.log(__func__, 'ok!');
   return map;
 };
 
-export const updateMap = (
-  map,
+export const commonUpdate = (
+  entity,
   newOptions,
   newEvents,
   oldOptions,
-  oldEvents
+  oldEvents,
+  operators
 ) => {
-  if (!map) {
-    console.log('updateMap fail! no map!');
+  const __func__ = 'commonUpdate';
+  if (!entity) {
+    console.log(__func__, 'fail! no entity!');
     return false;
   }
 
@@ -141,6 +144,72 @@ export const updateMap = (
       });
   }
 
+  // let operators = {
+  //   map: v => entity.setMap(v),
+  //   position: v => entity.setPosition(v),
+  //   offset: v => entity.setOffset(v),
+  //   icon: v => entity.setIcon(v),
+  //   content: v => entity.setContent(v),
+  //   topWhenClick: null,
+  //   bubble: null,
+  //   draggable: v => entity.setDraggable(v),
+  //   raiseOnDrag: null,
+  //   cursor: v => entity.setCursor(v),
+  //   visible: null,
+  //   zIndex: v => entity.setzIndex(v),
+  //   angle: v => entity.setAngle(v),
+  //   autoRotation: null,
+  //   animation: v => entity.setAnimation(v),
+  //   shadow: v => entity.setShadow(v),
+  //   title: v => entity.setTitle(v),
+  //   clickable: v => entity.setClickable(v),
+  //   shape: v => entity.setShape(v),
+  //   extData: v => entity.setExtData(v),
+  //   label: v => entity.setLabel(v)
+  // };
+
+  forOwn(props, (value, key) => {
+    if (value) {
+      let func = operators[key];
+      if (func) {
+        func(value);
+      } else {
+        // ignore properties can not set.
+        console.log(__func__, 'warning! no setter! can not update ' + key);
+      }
+    } else {
+      // key removed, not support!
+      console.log(__func__, 'warning! remove prop not support! key=' + key);
+    }
+  });
+  forOwn(events, (value, key) => {
+    let oldFunc = oldEvents && oldEvents[key];
+    if (oldFunc) {
+      entity.off(key, oldFunc);
+    }
+    if (value) {
+      entity.on(key, value);
+    }
+  });
+  console.log(
+    __func__, 'update:',
+    props,
+    events,
+    newOptions,
+    newEvents,
+    oldOptions,
+    oldEvents
+  );
+  return true;
+};
+
+export const updateMap = (
+  map,
+  newOptions,
+  newEvents,
+  oldOptions,
+  oldEvents
+) => {
   let operators = {
     view: null,
     layers: v => map.setLayers(v),
@@ -177,42 +246,14 @@ export const updateMap = (
     skyColor: null,
     preloadMode: null
   };
-
-  forOwn(props, (value, key) => {
-    if (value) {
-      let func = operators[key];
-      if (func) {
-        func(value);
-      } else {
-        // ignore properties can not set.
-        console.log('updateMap: warning! no setter! can not update ' + key);
-      }
-    } else {
-      // key removed, not support!
-      console.log('updateMap: warning! remove prop not support! key=' + key);
-    }
-  });
-  forOwn(events, (value, key) => {
-    let oldFunc = oldEvents && oldEvents[key];
-    if (oldFunc) {
-      console.log('updateMap: event off ' + key);
-      map.off(key, oldFunc);
-    }
-    if (value) {
-      console.log('updateMap: event on ' + key);
-      map.on(key, value);
-    }
-  });
-  console.log(
-    'updateMap: update:',
-    props,
-    events,
+  return commonUpdate (
+    map,
     newOptions,
     newEvents,
     oldOptions,
-    oldEvents
-  );
-  return true;
+    oldEvents,
+    operators
+  )
 };
 
 ////////////////////////////////////////////////////////////
@@ -226,16 +267,17 @@ export const updateMap = (
  * @param {*} events
  */
 export const createMarker = (AMap, options, events) => {
+  const __func__ = 'createMarker';
   if (!AMap) {
-    console.log('createMarker fail! no AMap!');
+    console.log(__func__, 'fail! no AMap!');
     return null;
   }
   if (!options) {
-    console.log('createMarker fail! no options!');
+    console.log(__func__, 'fail! no options!');
     return null;
   }
   if (!options.map) {
-    console.log('createMarker fail! no options.map!');
+    console.log(__func__, 'fail! no options.map!');
     return null;
   }
   // let marker = new AMap.Marker({
@@ -247,7 +289,7 @@ export const createMarker = (AMap, options, events) => {
   forOwn(events, (value, key) => {
     marker.on(key, value);
   });
-  console.log('createMarker ok!');
+  console.log(__func__, 'ok!');
   return marker;
 };
 
@@ -258,54 +300,6 @@ export const updateMarker = (
   oldOptions,
   oldEvents
 ) => {
-  if (!entity) {
-    console.log('updateMarker fail! no entity!');
-    return false;
-  }
-
-  // 找到改变的属性集合,包含添加,删除及修改的属性,删除的置为null
-  let props = {};
-  if (newOptions != oldOptions) {
-    oldOptions &&
-      forOwn(oldOptions, (value, key) => {
-        // 找到改变的旧属性,用新属性取代
-        let newValue = newOptions && newOptions[key];
-        if (!isEqual(newValue, value)) {
-          if (!(isNil(newValue) && isNil(value)))
-            props[key] = newValue;
-        }
-      });
-    newOptions &&
-      forOwn(newOptions, (value, key) => {
-        // 找到新加的属性,添加进去
-        let oldValue = oldOptions && oldOptions[key];
-        if (isNil(oldValue) && !isNil(value)) {
-          props[key] = value;
-        }
-      });
-  }
-  // 找到改变的事件集合,包含添加,删除及修改的事件处理函数,删除的置为null
-  let events = {};
-  if (newEvents != oldEvents) {
-    oldEvents &&
-      forOwn(oldEvents, (value, key) => {
-        // 找到改变的旧属性,用新属性取代
-        let newValue = newEvents && newEvents[key];
-        if (!isEqual(newValue, value)) {
-          if (!(isNil(newValue) && isNil(value)))
-            events[key] = newValue;
-        }
-      });
-    newEvents &&
-      forOwn(newEvents, (value, key) => {
-        // 找到新加的属性,添加进去
-        let oldValue = oldEvents && oldEvents[key];
-        if (isNil(oldValue) && !isNil(value)) {
-          events[key] = value;
-        }
-      });
-  }
-
   let operators = {
     map: v => entity.setMap(v),
     position: v => entity.setPosition(v),
@@ -330,37 +324,72 @@ export const updateMarker = (
     label: v => entity.setLabel(v)
   };
 
-  forOwn(props, (value, key) => {
-    if (value) {
-      let func = operators[key];
-      if (func) {
-        func(value);
-      } else {
-        // ignore properties can not set.
-        console.log('updateMarker: warning! no setter! can not update ' + key);
-      }
-    } else {
-      // key removed, not support!
-      console.log('updateMarker: warning! remove prop not support! key=' + key);
-    }
-  });
-  forOwn(events, (value, key) => {
-    let oldFunc = oldEvents && oldEvents[key];
-    if (oldFunc) {
-      entity.off(key, oldFunc);
-    }
-    if (value) {
-      entity.on(key, value);
-    }
-  });
-  console.log(
-    'updateMarker: update:',
-    props,
-    events,
+  return commonUpdate (
+    entity,
     newOptions,
     newEvents,
     oldOptions,
-    oldEvents
-  );
-  return true;
+    oldEvents,
+    operators
+  )
+};
+
+////////////////////////////////////////////////////////////
+// MassMarks, warning! is a layer!
+////////////////////////////////////////////////////////////
+/**
+ *
+ * @param {*} AMap
+ * @param {*} map
+ * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
+ * @param {*} events
+ */
+export const createMassMarks = (AMap, options, events) => {
+  const __func__ = 'createMassMarks';
+  if (!AMap) {
+    console.log(__func__, 'fail! no AMap!');
+    return null;
+  }
+  if (!options) {
+    console.log(__func__, 'fail! no options!');
+    return null;
+  }
+  let {map, data, ...restOpts} = options;
+  let entity = new AMap.MassMarks(data, restOpts);
+  forOwn(events, (value, key) => {
+    entity.on(key, value);
+  });
+  if (map) {
+    entity.setMap(map);
+  }
+  console.log(__func__, 'ok!');
+  return entity;
+};
+
+export const updateMassMarks = (
+  entity,
+  newOptions,
+  newEvents,
+  oldOptions,
+  oldEvents
+) => {
+  let operators = {
+    zIndex: v => entity.setzIndex(v),
+    opacity: null,
+    zooms: null,
+    cursor: v => entity.setCursor(v),
+    alwaysRender: null,
+    style: v => entity.setStyle(v),
+    map: v => entity.setMap(v),
+    data: v=> entity.setData(v)
+  };
+
+  return commonUpdate (
+    entity,
+    newOptions,
+    newEvents,
+    oldOptions,
+    oldEvents,
+    operators
+  )
 };
