@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import cx from 'classnames';
 import './App.css';
 
-import loadJs from './loadScript';
-import { loadMap } from './api';
-import Map from './Map';
-import Marker from './Marker';
-import MassMarks from './MassMarks';
-import Polygon from './Polygon';
-import Polyline from './Polyline';
+import loadJs from './lib/loadScript';
+import { loadMap } from './lib/api';
+import Map from './lib/Map';
+import Marker from './lib/Marker';
+import MassMarks from './lib/MassMarks';
+import Polygon from './lib/Polygon';
+import Polyline from './lib/Polyline';
 
 class MarkerTest extends Component {
   constructor() {
@@ -125,17 +125,23 @@ class MarkerTest extends Component {
           >
           </Marker>
           }
+          {this.state.showMarker &&
           <Marker
             AMap={this.state.AMap}
             options={{
               icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
-              position: [116.406467, 39.908761],
-              content:'<div class="marker-route marker-marker-bus-from"></div>'
+              position: [116.385428, 39.92723],
+              content:'<div class="marker-route marker-marker-bus-from"></div>',
+              label: {
+                offset: this.state.AMap && new this.state.AMap.Pixel(-30, -30),
+                content: "我是marker的label标签"
+              }
             }}
             events={{
               click:this._logging
             }}
           />
+          }
           <Marker
             AMap={this.state.AMap}
             refer={(entity) => this.setState({carEntity: entity})}

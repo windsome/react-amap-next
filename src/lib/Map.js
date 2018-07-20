@@ -9,7 +9,7 @@ const debug = () => {};
 export class Map extends Component {
   static propTypes = {
     AMap: PropTypes.object,
-    refMap: PropTypes.func, // 类似ref的函数形式,可以让父组件调用_entity
+    refer: PropTypes.func, // 类似ref的函数形式,可以让父组件调用_entity
     options: PropTypes.object,
     events: PropTypes.object
     //   zoom: PropTypes.number, // 10, //设置地图显示的缩放级别
@@ -33,10 +33,10 @@ export class Map extends Component {
 
   componentDidMount() {
     debug(__com__, 'componentDidMount', this.refElement, this._entity);
-    let { AMap, refMap, options, events } = this.props;
+    let { AMap, options, events } = this.props;
     this._entity = createMap(AMap, this.refElement, options, events);
     if (this._entity) {
-      if (refMap) refMap(this._entity);
+      if (this.props.refer) this.props.refer(this._entity);
       this.setState({ __map__: this._entity });
     }
   }
@@ -51,11 +51,11 @@ export class Map extends Component {
 
   componentDidUpdate(prevProps) {
     debug(__com__, 'componentDidUpdate', this.refElement, this._entity);
-    let { AMap, refMap, options, events } = this.props;
+    let { AMap, options, events } = this.props;
     if (!this._entity) {
       this._entity = createMap(AMap, this.refElement, options, events);
       if (this._entity) {
-        if (refMap) refMap(this._entity);
+        if (this.props.refer) this.props.refer(this._entity);
         this.setState({ __map__: this._entity });
       }
       return;
@@ -74,12 +74,12 @@ export class Map extends Component {
   componentWillUnmount() {
     debug(__com__, 'componentWillUnmount', this.refElement, this._entity);
     if (this._entity) {
-      let { refMap } = this.props;
+      let { refer } = this.props;
       //   this._entity.clearMap();
       this._entity.destroy();
       //   delete this._entity;
       this._entity = null;
-      if (refMap) refMap(this._entity);
+      if (this.props.refer) this.props.refer(this._entity);
     }
   }
 
@@ -104,9 +104,19 @@ export class Map extends Component {
       return child;
     });
   }
-
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   debug(__com__, 'shouldComponentUpdate', this.refElement, this._entity);
+  //   let { AMap: oldAMap, refer: oldRefer, options: oldOptions, events: oldEvents } = this.props;
+  //   let { AMap: newAMap, refer: newRefer, options: newOptions, events: newEvents } = nextProps;
+  //   if (oldAMap === newAMap && oldRefer === newRefer && oldOptions === newOptions && oldEvents === newEvents) {
+  //     debug(__com__, 'shouldComponentUpdate', false);
+  //     return false;
+  //   }
+  //   debug(__com__, 'shouldComponentUpdate', true);
+  //   return true;
+  // }
   render() {
-    debug(__com__, 'component render', this.refElement, this._entity);
+    debug(__com__, 'component render', this._entity);
     let {
       AMap,
       options,

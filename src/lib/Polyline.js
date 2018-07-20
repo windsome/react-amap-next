@@ -69,6 +69,10 @@ export class Polyline extends Component {
     }
   }
 
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   debug(__com__, 'shouldComponentUpdate', this._entity);
+  //   return false;
+  // }
   render() {
     debug(__com__, 'render', this.props.children, this._entity);
     let {
