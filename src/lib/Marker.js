@@ -76,6 +76,7 @@ export class Marker extends Component {
     debug(__com__, 'componentWillUnmount', this.props.children, this._entity);
     if (this._entity) {
       //   this._entity.clearMap();
+      this._entity.stopMove();
       this._entity.setMap(null);
       delete this._entity;
       //   delete this._entity;

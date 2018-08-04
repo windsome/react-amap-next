@@ -1,24 +1,17 @@
 import forOwn from 'lodash/forOwn';
 import isEqual from 'lodash/isEqual';
 import isNil from 'lodash/isNil';
-import loadjscssfile from './loadScript';
+//import loadjscssfile from './loadScript';
+import APILoader from './APILoader'
 
-export const loadApi = async (key = '0325e3d6d69cd56de4980b4f28906fd8') => {
-  return await loadjscssfile(
-    'https://webapi.amap.com/maps?v=1.4.7&key=' + key,
-    'js'
-  );
+export const loadApi = (key = '0325e3d6d69cd56de4980b4f28906fd8') => {
+  return new APILoader({
+    key,
+    useAMapUI: false,
+    version: '1.4.7',
+    protocol: 'https'
+  }).load();
 };
-
-// let LoadResult = false;
-// loadApi().then(result => {
-//   console.log('loadApi result:', result);
-//   LoadResult = result;
-//   return result;
-// })
-
-// export default LoadResult;
-
 export const loadMap = key => {
   return new Promise((resolve, reject) => {
     if (window.AMap) {
@@ -38,6 +31,33 @@ export const loadMap = key => {
   });
 };
 
+
+// export const loadApiV1 = async (key = '0325e3d6d69cd56de4980b4f28906fd8') => {
+//   return await loadjscssfile(
+//     'https://webapi.amap.com/maps?v=1.4.7&key=' + key,
+//     'js'
+//   );
+// };
+
+// export const loadMapV1 = key => {
+//   return new Promise((resolve, reject) => {
+//     if (window.AMap) {
+//       resolve(window.AMap);
+//     }
+//     loadApi(key)
+//       .then(ret => {
+//         if (window.AMap) {
+//           resolve(window.AMap);
+//         } else {
+//           reject(new Error('window.AMap不存在!'));
+//         }
+//       })
+//       .catch(error => {
+//         reject(new Error('加载地图错误!' + error.message));
+//       });
+//   });
+// };
+
 /**
  * [加载插件](https://lbs.amap.com/api/javascript-api/guide/abc/plugins)
  * 加载完成后,可以调用:
@@ -48,20 +68,13 @@ export const loadMap = key => {
 export const loadPlugin = name => {
   return new Promise((resolve, reject) => {
     if (window.AMap) {
-      resolve(true);
-    }
-    loadApi()
-      .then(ret => {
-        if (!name) {
-          reject(new Error('未填写组件名'));
-        }
-        window.AMap.plugin(name, () => {
-          resolve(true);
-        });
-      })
-      .catch(error => {
-        reject(new Error('加载地图错误!' + error.message));
+      window.AMap.plugin(name, () => {
+        resolve(true);
       });
+      //是否有加载失败的情况,如果加载失败,怎么reject?
+    } else {
+      reject(new Error('地图还未加载!'));
+    }
   });
 };
 
