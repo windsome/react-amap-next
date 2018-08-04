@@ -6,9 +6,10 @@
 // 首先安装react-amap-next
 yarn add react-amap-next
 // 加载所需组件
-import { loadMap } from './lib/api'; //加载高德地图方法,如果与redux配合,可以写在action/reducer中
-import Map from 'react-amap-next/lib/Map'; //加载Map
+import { loadMap } from 'react-amap-next/lib/api'; //加载高德地图方法,如果与redux配合,可以写在action/reducer中
+import Map from 'react-amap-next/lib/Map';
 import Marker from 'react-amap-next/lib/Marker';
+
 // 在componentDidMount中加载js
 loadMap('<amap-key>').then(AMap=>{
   // 可在此做一些初始化
