@@ -11,6 +11,13 @@
   ],
   "homepage": "https://github.com/windsome/react-amap-next",
   "author": "windsome.feng <36081189@qq.com> (https://github.com/windsome/)",
+  "scripts": {
+    "build:umd": "cross-env BABEL_ENV=umd babel src/lib --out-dir lib",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash": "^4.17.10",
@@ -18,10 +25,34 @@
     "react-dom": "^16.4.1",
     "react-scripts": "1.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "babel-cli": "6.14.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "cross-env": "^5.1.4",
+    "prop-types": "^15.6.0"
+  },
+  "babel": {
+    "env": {
+      "umd": {
+        "presets": [
+          [
+            "env",
+            {
+              "modules": false
+            }
+          ],
+          "react"
+        ],
+        "plugins": [
+          "transform-object-rest-spread",
+          "transform-class-properties",
+          "external-helpers"
+        ]
+      }
+    }
   }
 }
