@@ -1,6 +1,6 @@
 {
   "name": "react-amap-next",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "这是高德地图的react版本,相比react-amap更加简单,更加贴合react用户",
   "keywords": [
     "react",
@@ -12,7 +12,7 @@
   "homepage": "https://github.com/windsome/react-amap-next",
   "author": "windsome.feng <36081189@qq.com> (https://github.com/windsome/)",
   "scripts": {
-    "build:umd": "cross-env BABEL_ENV=umd babel src/lib --out-dir lib",
+    "build:lib": "cross-env BABEL_ENV=es babel src/lib --out-dir lib",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -38,16 +38,19 @@
   },
   "babel": {
     "env": {
-      "umd": {
+      "es": {
         "presets": [
-          "es2015",
-          "env",
+          [
+            "env",
+            {
+              "modules": false
+            }
+          ],
           "react"
         ],
         "plugins": [
           "transform-object-rest-spread",
-          "transform-class-properties",
-          "external-helpers"
+          "transform-class-properties"
         ]
       }
     }
