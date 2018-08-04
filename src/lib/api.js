@@ -1,6 +1,7 @@
 import forOwn from 'lodash/forOwn';
 import isEqual from 'lodash/isEqual';
 import isNil from 'lodash/isNil';
+import isEmpty from 'lodash/isEmpty';
 //import loadjscssfile from './loadScript';
 import APILoader from './APILoader'
 
@@ -205,15 +206,17 @@ export const commonUpdate = (
       entity.on(key, value);
     }
   });
-  console.log(
-    __func__, 'update:',
-    props,
-    events,
-    // newOptions,
-    // newEvents,
-    // oldOptions,
-    // oldEvents
-  );
+  if (!isEmpty(props) || !isEmpty(events)) {
+    console.log(
+      __func__, 'update:',
+      props,
+      events,
+      // newOptions,
+      // newEvents,
+      // oldOptions,
+      // oldEvents
+    );
+  }
   return true;
 };
 

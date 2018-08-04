@@ -119,6 +119,7 @@ export class Map extends Component {
     debug(__com__, 'component render', this._entity);
     let {
       AMap,
+      refer,
       options,
       events,
       match,
