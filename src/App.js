@@ -9,6 +9,7 @@ import Marker from './lib/Marker';
 import MassMarks from './lib/MassMarks';
 import Polygon from './lib/Polygon';
 import Polyline from './lib/Polyline';
+import InfoWindow from './lib/InfoWindow';
 
 class MarkerTest extends Component {
   constructor() {
@@ -384,6 +385,67 @@ class PolygonTest extends Component {
   }
 }
 
+class InfoWindowTest extends Component {
+  constructor() {
+    super();
+    this.state = {};
+    this._closeInfoWindow = this._closeInfoWindow.bind(this);
+  }
+
+  componentDidMount() {
+    loadMap('0325e3d6d69cd56de4980b4f28906fd8').then(AMap => {
+      let roadNet = new AMap.TileLayer.RoadNet();
+      let center = new AMap.LngLat(116.403322, 39.920255)
+      this.setState({ AMap, layers: [roadNet], center });
+    });
+  }
+  _closeInfoWindow(evt) {
+    console.log ('close infowindow!');
+    this.setState({isOpen:false})
+  }
+
+  render() {
+    const html = `<div><h4>Greetings</h4><p>This is content of this info window</p><p>Click 'Change Value' Button:</p></div>`;
+    const size = {
+      width: 250 + Math.random() * 20,
+      height: 140 + Math.random() * 20,
+    }
+    const offset = [Math.random() * 10, Math.random() * 10]
+
+    return (
+      <div>
+      <div>
+        <div style={{margin:2}}>
+          <input type='button' onClick={() => this.setState({ isOpen:true })} value='显示' />
+          <input type='button' onClick={() => this.setState({ isOpen:false })} value='隐藏' />
+        </div>
+        <Map
+          AMap={this.state.AMap}
+          style={{ width: 1100, height: 800 }}
+          options={{ center: this.state.center, layers: this.state.layers }}
+      >
+      {this.state.isOpen && (
+          <InfoWindow
+            AMap={this.state.AMap}
+            options={{
+              position: this.state.center,
+              isCustom:false,
+              content:html,
+              size,
+              offset
+              }}
+            events={{
+              close: this._closeInfoWindow
+            }}
+          />
+          )}
+        </Map>
+      </div>
+      </div>
+    );
+  }
+}
+
 class App extends Component {
   constructor() {
     super();
@@ -397,6 +459,7 @@ class App extends Component {
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'marker')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'marker'})}> MarkerTest </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'massmarks')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'massmarks'})}> MassMarksTest </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'polygon')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'polygon'})}> PolygonTest </span>
+          <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'infowindow')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'infowindow'})}> InfoWindowTest </span>
         </div>
         <div>
           {this.state.test === 'marker' &&
@@ -408,7 +471,10 @@ class App extends Component {
           {this.state.test === 'polygon' &&
           <PolygonTest />
           }
-          
+          {this.state.test === 'infowindow' &&
+          <InfoWindowTest />
+          }
+
         </div>
       </div>
     );

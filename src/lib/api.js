@@ -8,7 +8,7 @@ import APILoader from './APILoader'
 export const loadApi = (key = '0325e3d6d69cd56de4980b4f28906fd8') => {
   return new APILoader({
     key,
-    useAMapUI: false,
+    useAMapUI: true,
     version: '1.4.7',
     protocol: 'https'
   }).load();
@@ -552,6 +552,59 @@ export const updatePolyline = (
     oldEvents,
     operators,
     'updatePolyline'
+  )
+};
+
+////////////////////////////////////////////////////////////
+// InfoWindow
+////////////////////////////////////////////////////////////
+/**
+ *
+ * @param {*} AMap
+ * @param {*} map
+ * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
+ * @param {*} events
+ */
+export const createInfoWindow = (AMap, options, events) => {
+  const __func__ = 'createInfoWindow';
+  if (!AMap || !options || !options.map) {
+    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+    return null;
+  }
+  let entity = new AMap.InfoWindow(options);
+  forOwn(events, (value, key) => {
+    entity.on(key, value);
+  });
+  console.log(__func__, 'ok!');
+  return entity;
+};
+
+export const updateInfoWindow = (
+  entity,
+  newOptions,
+  newEvents,
+  oldOptions,
+  oldEvents
+) => {
+  let operators = {
+    isCustom: null,
+    autoMove: null,
+    closeWhenClickMap: null,
+    content: v => entity.setContent(v),
+    size: v => entity.setSize(v),
+    offset: null,
+    position: v => entity.setPosition(v),
+    showShadow: null,
+  };
+
+  return commonUpdate (
+    entity,
+    newOptions,
+    newEvents,
+    oldOptions,
+    oldEvents,
+    operators,
+    'updateInfoWindow'
   )
 };
 

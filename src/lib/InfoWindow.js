@@ -1,11 +1,12 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { createPolygon, updatePolygon } from './api';
-const __com__ = 'Polygon';
+import { createInfoWindow, updateInfoWindow } from './api';
+const __com__ = 'InfoWindow';
 //const debug = console.log;
 const debug = () => {};
 
-export class Polygon extends Component {
+// https://lbs.amap.com/api/javascript-api/reference/infowindow
+export class InfoWindow extends Component {
   static propTypes = {
     AMap: PropTypes.object,
     __map__: PropTypes.object,
@@ -25,7 +26,7 @@ export class Polygon extends Component {
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
-    this._entity = createPolygon(AMap, opts, events);
+    this._entity = createInfoWindow(AMap, opts, events);
   }
 
   componentDidUpdate(prevProps) {
@@ -34,7 +35,7 @@ export class Polygon extends Component {
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
     if (!this._entity) {
-      this._entity = createPolygon(AMap, opts, events);
+      this._entity = createInfoWindow(AMap, opts, events);
       return;
     }
 
@@ -43,7 +44,7 @@ export class Polygon extends Component {
       ...(prevProps.options || {}),
       map: prevProps.__map__
     };
-    updatePolygon(this._entity, opts, events, oldOpts, prevProps.events);
+    updateInfoWindow(this._entity, opts, events, oldOpts, prevProps.events);
   }
 
   componentWillUnmount() {
@@ -81,4 +82,4 @@ export class Polygon extends Component {
   }
 }
 
-export default Polygon;
+export default InfoWindow;

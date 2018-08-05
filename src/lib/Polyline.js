@@ -20,24 +20,12 @@ export class Polyline extends Component {
     debug(__com__, 'constructor', this._entity);
   }
 
-  componentWillMount() {
-    debug(__com__, 'componentWillMount', this.props.children, this._entity);
-  }
-
   componentDidMount() {
     debug(__com__, 'componentDidMount', this.props.children, this._entity);
     let { AMap, __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
     this._entity = createPolyline(AMap, opts, events);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    debug(__com__, 'componentWillReceiveProps', this.props.children, this._entity);
-  }
-
-  componentWillUpdate() {
-    debug(__com__, 'componentWillUpdate', this.props.children, this._entity);
   }
 
   componentDidUpdate(prevProps) {

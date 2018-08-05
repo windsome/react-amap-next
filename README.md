@@ -37,7 +37,8 @@ npm start
 5. `MassMarks`为海量点组件,此组件是一个layer图层,因为比traffic, sattelite复杂,需要设置很多属性,所以独立成一个组件.其他图层也可以参考设置成独立组件
 6. `Polygon.js`为多边形控件,可以用来画行政区域图
 7. `Polyline.js`为多折点线组件,可以用来模拟汽车行驶轨迹
-8. 其他组件,有待添加.
+8. `InfoWindow.js`为InfoWindow组件,可以用来显示弹出框
+9. 其他组件,有待添加.
 
 ## 注意事项
 1. `loadScript.js`是用来加载js和css的,希望能确保加载文件的唯一性,可以参考requirejs的实现机制改掉.
