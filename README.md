@@ -11,15 +11,21 @@ import Map from 'react-amap-next/lib/Map';
 import Marker from 'react-amap-next/lib/Marker';
 
 // 在componentDidMount中加载js
-loadMap('<amap-key>').then(AMap=>{
-  // 可在此做一些初始化
-  this.setState({AMap});
-})
+componentDidMount() {
+  loadMap('<amap-key>').then(AMap=>{
+    // 可在此做一些初始化
+    this.setState({AMap});
+  })
+}
 // 在render中使用Map,注意其中参数refer类似react中ref,只支持函数,可以获得amap实例;options是参数,更新的参数也通过此处传下去,events是地图事件的回调,设置后将会被调用,可以触发属性的改变.
 // 一般地图组件都包含AMap, refer, options, events4个属性.
 // 注意, options和events中的函数和变量最好都为外面声明的,而不使用匿名的函数.否则容易触发事件的频繁移除及更新,耗费性能.
-<Map refer={} AMap={this.state.AMap} style={{width:1200, height:800}} options={{}} events={{}} >
-</Map>
+render() {
+  return (
+  <Map refer={} AMap={this.state.AMap} style={{width:1200, height:800}} options={{}} events={{}} >
+  </Map>
+  )
+}
 ```
 或者直接下载,将源码添加进自己的项目中
 ```

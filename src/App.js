@@ -395,8 +395,10 @@ class InfoWindowTest extends Component {
   componentDidMount() {
     loadMap('0325e3d6d69cd56de4980b4f28906fd8').then(AMap => {
       let roadNet = new AMap.TileLayer.RoadNet();
-      let center = new AMap.LngLat(116.403322, 39.920255)
-      this.setState({ AMap, layers: [roadNet], center });
+      let center1 = new AMap.LngLat(116.403322, 39.920255);
+      let center2 = new AMap.LngLat(116.405522, 39.921265);
+      let offset = new AMap.Pixel(Math.random() * 10, Math.random() * 10)
+      this.setState({ AMap, layers: [roadNet], center: center1, center1, center2, offset });
     });
   }
   _closeInfoWindow(evt) {
@@ -410,7 +412,6 @@ class InfoWindowTest extends Component {
       width: 250 + Math.random() * 20,
       height: 140 + Math.random() * 20,
     }
-    const offset = [Math.random() * 10, Math.random() * 10]
 
     return (
       <div>
@@ -418,6 +419,8 @@ class InfoWindowTest extends Component {
         <div style={{margin:2}}>
           <input type='button' onClick={() => this.setState({ isOpen:true })} value='显示' />
           <input type='button' onClick={() => this.setState({ isOpen:false })} value='隐藏' />
+          <input type='button' onClick={() => this.setState({ center: this.state.center1 })} value='center1' />
+          <input type='button' onClick={() => this.setState({ center: this.state.center2 })} value='center2' />
         </div>
         <Map
           AMap={this.state.AMap}
@@ -432,7 +435,7 @@ class InfoWindowTest extends Component {
               isCustom:false,
               content:html,
               size,
-              offset
+              offset: this.state.offset
               }}
             events={{
               close: this._closeInfoWindow

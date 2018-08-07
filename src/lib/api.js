@@ -354,6 +354,60 @@ export const updateMarker = (
 };
 
 ////////////////////////////////////////////////////////////
+// Traffic layer, warning! is a layer!
+////////////////////////////////////////////////////////////
+/**
+ *
+ * @param {*} AMap
+ * @param {*} map
+ * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
+ * @param {*} events
+ */
+export const createTraffic = (AMap, options, events) => {
+  const __func__ = 'createTraffic';
+  if (!AMap || !options || !options.map) {
+    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+    return null;
+  }
+  let {map, data, ...restOpts} = options;
+  let entity = new AMap.TileLayer.Traffic(data, restOpts);
+  forOwn(events, (value, key) => {
+    entity.on(key, value);
+  });
+  entity.setMap(map);
+  console.log(__func__, 'ok!');
+  return entity;
+};
+
+export const updateTraffic = (
+  entity,
+  newOptions,
+  newEvents,
+  oldOptions,
+  oldEvents
+) => {
+  let operators = {
+    map: v => entity.setMap(v),
+    zIndex: v => entity.setzIndex(v),
+    opacity: v => entity.setOpacity(v),
+    zooms: null,
+    detectRetina: null,
+    autoRefresh: null,
+    interval: null,
+  };
+
+  return commonUpdate (
+    entity,
+    newOptions,
+    newEvents,
+    oldOptions,
+    oldEvents,
+    operators,
+    'updateTraffic'
+  )
+};
+
+////////////////////////////////////////////////////////////
 // MassMarks, warning! is a layer!
 ////////////////////////////////////////////////////////////
 /**
@@ -365,12 +419,8 @@ export const updateMarker = (
  */
 export const createMassMarks = (AMap, options, events) => {
   const __func__ = 'createMassMarks';
-  if (!AMap) {
-    console.log(__func__, 'fail! no AMap!');
-    return null;
-  }
-  if (!options) {
-    console.log(__func__, 'fail! no options!');
+  if (!AMap || !options || !options.map) {
+    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
   let {map, data, ...restOpts} = options;
@@ -378,9 +428,7 @@ export const createMassMarks = (AMap, options, events) => {
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
-  if (map) {
-    entity.setMap(map);
-  }
+  entity.setMap(map);
   console.log(__func__, 'ok!');
   return entity;
 };
@@ -426,16 +474,8 @@ export const updateMassMarks = (
  */
 export const createPolygon = (AMap, options, events) => {
   const __func__ = 'createPolygon';
-  if (!AMap) {
-    console.log(__func__, 'fail! no AMap!');
-    return null;
-  }
-  if (!options) {
-    console.log(__func__, 'fail! no options!');
-    return null;
-  }
-  if (!options.map) {
-    console.log(__func__, 'fail! no options.map!');
+  if (!AMap || !options || !options.map) {
+    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
   let entity = new AMap.Polygon(options);
@@ -494,16 +534,8 @@ export const updatePolygon = (
  */
 export const createPolyline = (AMap, options, events) => {
   const __func__ = 'createPolyline';
-  if (!AMap) {
-    console.log(__func__, 'fail! no AMap!');
-    return null;
-  }
-  if (!options) {
-    console.log(__func__, 'fail! no options!');
-    return null;
-  }
-  if (!options.map) {
-    console.log(__func__, 'fail! no options.map!');
+  if (!AMap || !options || !options.map) {
+    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
   let entity = new AMap.Polyline(options);
