@@ -105,7 +105,6 @@ class MarkerTest extends Component {
           {'消息:'+this.state.msg}
         </div>
         <Map
-          AMap={this.state.AMap}
           style={{ width: 1200, height: 800 }}
           options={{ center: this.state.center, layers: this.state.layers, zoom:13 }}
           events={{
@@ -115,7 +114,6 @@ class MarkerTest extends Component {
       >
           {this.state.showMarker &&
           <Marker
-            AMap={this.state.AMap}
             options={{
               icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
               position: this.state.position || [116.405467, 39.907761]
@@ -128,7 +126,6 @@ class MarkerTest extends Component {
           }
           {this.state.showMarker &&
           <Marker
-            AMap={this.state.AMap}
             options={{
               icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
               position: [116.385428, 39.92723],
@@ -144,7 +141,6 @@ class MarkerTest extends Component {
           />
           }
           <Marker
-            AMap={this.state.AMap}
             refer={(entity) => this.setState({carEntity: entity})}
             options={{
               position: [116.397428, 39.90923],
@@ -157,7 +153,6 @@ class MarkerTest extends Component {
             }}
           />
           <Polyline
-            AMap={this.state.AMap}
             options={{
               path: this.state.lineArr,
               strokeColor: "#00A",  //线颜色
@@ -170,7 +165,6 @@ class MarkerTest extends Component {
             }}
           />
           <Polyline
-            AMap={this.state.AMap}
             options={{
               // path: lineArr,
               path:this.state.passedPath,
@@ -197,32 +191,29 @@ class MassMarkTest extends Component {
     super();
     this.state = {};
     this._mapDblclick = this._mapDblclick.bind(this);
+    this._mapClick = this._mapClick.bind(this);
     this._changeStyle = this._changeStyle.bind(this);
+    this._setMapRefer = this._setMapRefer.bind(this);
+    this._setMassRefer = this._setMassRefer.bind(this);
   }
 
   componentDidMount() {
     loadMap('0325e3d6d69cd56de4980b4f28906fd8').then(AMap => {
-      let roadNet = new AMap.TileLayer.RoadNet();
-      let traffic = new AMap.TileLayer.Traffic({
-        autoRefresh: true, //是否自动刷新，默认为false
-        interval: 15 //刷新间隔，默认180s
-      });
-      let style = [{
-        url: 'https://a.amap.com/jsapi_demos/static/images/mass0.png',
-        anchor: new AMap.Pixel(16, 16),
-        size: new AMap.Size(21, 21)
-      },{
-        url: 'https://a.amap.com/jsapi_demos/static/images/mass1.png',
-        anchor: new AMap.Pixel(24, 24),
-        size: new AMap.Size(17, 17)
-      },{
-        url: 'https://a.amap.com/jsapi_demos/static/images/mass2.png',
-        anchor: new AMap.Pixel(23, 23),
-        size: new AMap.Size(5, 5)
-      }
-    ];
+      // let style = [{
+      //   url: 'https://a.amap.com/jsapi_demos/static/images/mass0.png',
+      //   anchor: new AMap.Pixel(16, 16),
+      //   size: new AMap.Size(21, 21)
+      // },{
+      //   url: 'https://a.amap.com/jsapi_demos/static/images/mass1.png',
+      //   anchor: new AMap.Pixel(24, 24),
+      //   size: new AMap.Size(17, 17)
+      // },{
+      //   url: 'https://a.amap.com/jsapi_demos/static/images/mass2.png',
+      //   anchor: new AMap.Pixel(23, 23),
+      //   size: new AMap.Size(5, 5)
+      // }];
 
-      this.setState({ AMap, layers: [roadNet, traffic], style });
+      this.setState({ AMap });
     });
     loadJs('https://a.amap.com/jsapi_demos/static/citys.js','js').then(ret => {
       console.log('ret:', ret, window.citys);
@@ -234,8 +225,39 @@ class MassMarkTest extends Component {
     })
   }
 
+  _getStyle() {
+    if (!this.styles) {
+      if (window.AMap) {
+        this.styles = [{
+          url: 'https://a.amap.com/jsapi_demos/static/images/mass0.png',
+          anchor: new window.AMap.Pixel(16, 16),
+          size: new window.AMap.Size(21, 21)
+        },{
+          url: 'https://a.amap.com/jsapi_demos/static/images/mass1.png',
+          anchor: new window.AMap.Pixel(24, 24),
+          size: new window.AMap.Size(17, 17)
+        },{
+          url: 'https://a.amap.com/jsapi_demos/static/images/mass2.png',
+          anchor: new window.AMap.Pixel(23, 23),
+          size: new window.AMap.Size(5, 5)
+        }];
+      }
+    }
+    return this.styles;
+  }
+
   _mapDblclick() {
+    if (this.massRefer) {
+      this.massRefer.show();
+      this.massRefer.setData(this.state.citys);
+    }
     this.setState({msg:'双击了Map!'});
+  }
+  _mapClick() {
+    if (this.mapRefer) {
+      let layers= this.mapRefer.getLayers();
+      console.log('_mapClick:', layers);
+    }
   }
   _changeStyle(item) {
     let style = (item.style+1) % 3;
@@ -244,8 +266,15 @@ class MassMarkTest extends Component {
     data2[item.id] = {...item, style};
     this.setState({citys:data2});
   }
+  _setMapRefer (refer) {
+    this.mapRefer = refer;
+  }
+  _setMassRefer (refer) {
+    this.massRefer = refer;
+  }
 
   render() {
+    let massStyles = this._getStyle();
     return (
       <div>
       <div>
@@ -263,22 +292,23 @@ class MassMarkTest extends Component {
           {'消息:'+this.state.msg}
         </div>
         <Map
-          AMap={this.state.AMap}
+          refer={this._setMapRefer}
           style={{ width: 1100, height: 800 }}
-          options={{ center: this.state.center, layers: this.state.layers }}
+          options={{ center: this.state.center }}
           events={{
             // click:e=>this.setState({msg: '点击了Map'}),
             dblclick: this._mapDblclick,
+            click:this._mapClick
           }}
       >
           <MassMarks
-            AMap={this.state.AMap}
+            refer={this._setMassRefer}
             options={{
               data: this.state.citys,
               opacity:0.8,
               zIndex: 111,
               cursor:'pointer',
-              style: this.state.style
+              style: massStyles
             }}
             events={{
               click:e=> {
@@ -351,7 +381,6 @@ class PolygonTest extends Component {
           {'消息:'+this.state.msg}
         </div>
         <Map
-          AMap={this.state.AMap}
           style={{ width: 1100, height: 800 }}
           options={{ center: this.state.center, layers: this.state.layers }}
           events={{
@@ -360,7 +389,6 @@ class PolygonTest extends Component {
           }}
       >
           <Polygon
-            AMap={this.state.AMap}
             options={{
               path: poly,
               strokeColor: "#FF33FF", //线颜色
@@ -423,13 +451,11 @@ class InfoWindowTest extends Component {
           <input type='button' onClick={() => this.setState({ center: this.state.center2 })} value='center2' />
         </div>
         <Map
-          AMap={this.state.AMap}
           style={{ width: 1100, height: 800 }}
           options={{ center: this.state.center, layers: this.state.layers }}
       >
       {this.state.isOpen && (
           <InfoWindow
-            AMap={this.state.AMap}
             options={{
               position: this.state.center,
               isCustom:false,

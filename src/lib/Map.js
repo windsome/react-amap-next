@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { loadMap, createMap, updateMap } from './api';
+import { createMap, updateMap } from './api';
 
 const __com__ = 'Map';
 //const debug = console.log;
@@ -8,7 +8,6 @@ const debug = () => {};
 
 export class Map extends Component {
   static propTypes = {
-    AMap: PropTypes.object,
     refer: PropTypes.func, // 类似ref的函数形式,可以让父组件调用_entity
     options: PropTypes.object,
     events: PropTypes.object
@@ -24,17 +23,17 @@ export class Map extends Component {
     super();
     this.refElement = null;
     this._entity = null;
-    debug(__com__, 'component constructor', this.refElement, this._entity);
+    debug(__com__, 'component constructor', this._entity);
   }
 
   componentWillMount() {
-    debug(__com__, 'componentWillMount', this.refElement, this._entity);
+    debug(__com__, 'componentWillMount', this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
   }
 
   componentDidMount() {
-    debug(__com__, 'componentDidMount', this.refElement, this._entity);
-    let { AMap, options, events } = this.props;
-    this._entity = createMap(AMap, this.refElement, options, events);
+    debug(__com__, 'componentDidMount', this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
+    let { options, events } = this.props;
+    this._entity = createMap(this.refElement, options, events);
     if (this._entity) {
       if (this.props.refer) this.props.refer(this._entity);
       this.setState({ __map__: this._entity });
@@ -42,18 +41,18 @@ export class Map extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debug(__com__, 'componentWillReceiveProps', this.refElement, this._entity);
+    debug(__com__, 'componentWillReceiveProps', this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
   }
 
   componentWillUpdate() {
-    debug(__com__, 'componentWillUpdate', this.refElement, this._entity);
+    debug(__com__, 'componentWillUpdate', this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
   }
 
   componentDidUpdate(prevProps) {
-    debug(__com__, 'componentDidUpdate', this.refElement, this._entity);
-    let { AMap, options, events } = this.props;
+    debug(__com__, 'componentDidUpdate', this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
+    let { options, events } = this.props;
     if (!this._entity) {
-      this._entity = createMap(AMap, this.refElement, options, events);
+      this._entity = createMap(this.refElement, options, events);
       if (this._entity) {
         if (this.props.refer) this.props.refer(this._entity);
         this.setState({ __map__: this._entity });
@@ -72,14 +71,13 @@ export class Map extends Component {
   }
 
   componentWillUnmount() {
-    debug(__com__, 'componentWillUnmount', this.refElement, this._entity);
+    debug(__com__, 'componentWillUnmount', this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
     if (this._entity) {
-      let { refer } = this.props;
       //   this._entity.clearMap();
       this._entity.destroy();
       //   delete this._entity;
       this._entity = null;
-      if (this.props.refer) this.props.refer(this._entity);
+      if (this.props.refer) this.props.refer(this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
     }
   }
 
@@ -105,7 +103,7 @@ export class Map extends Component {
     });
   }
   // shouldComponentUpdate(nextProps, nextState) {
-  //   debug(__com__, 'shouldComponentUpdate', this.refElement, this._entity);
+  //   debug(__com__, 'shouldComponentUpdate', this._entity);
   //   let { AMap: oldAMap, refer: oldRefer, options: oldOptions, events: oldEvents } = this.props;
   //   let { AMap: newAMap, refer: newRefer, options: newOptions, events: newEvents } = nextProps;
   //   if (oldAMap === newAMap && oldRefer === newRefer && oldOptions === newOptions && oldEvents === newEvents) {
@@ -116,25 +114,18 @@ export class Map extends Component {
   //   return true;
   // }
   render() {
-    debug(__com__, 'component render', this._entity);
-    let {
-      AMap,
-      refer,
-      options,
-      events,
-      match,
-      location,
-      history,
-      children,
-      staticContext,
-      ...rest
-    } = this.props;
+    debug(__com__, 'render', this._entity, 'layerCount:'+(this._entity && this._entity.getLayers().length));
+    let { className, style, children } = this.props;
+    let restProps = {};
+    if (className) restProps = { ...restProps, className };
+    if (style) restProps = { ...restProps, style };
+
     return (
       <div
         ref={ele => {
           this.refElement = ele;
         }}
-        {...rest}
+        {...restProps}
       >
         {this.renderChildren(children, this._entity)}
       </div>

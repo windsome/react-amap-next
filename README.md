@@ -50,6 +50,9 @@ npm start
 1. `loadScript.js`是用来加载js和css的,希望能确保加载文件的唯一性,可以参考requirejs的实现机制改掉.
 2. 与`react-amap`的不同之处,加载高德地图js与`Map`,`Marker`等组件是分离的.
 
+## 已知问题
+1. 有时海量点图层(`MassMarks`层)不显示,见此版本例子中的`App.js`,首先点击MarkerTest,然后再打开MassMarksTest,会发现海量点图层有时不显示.原因为:MassMarks层是属于Map的其中一个层,如果Map的layers属性后于海量点图层加载,则海量点图层会被layers属性替代. 建议以后将所有图层均做成组件,并且Map组件不再支持layers属性.
+
 ## 反馈
 We are always open to [your feedback](https://github.com/windsome/react-amap-next/issues).
 

@@ -5,6 +5,9 @@ import isEmpty from 'lodash/isEmpty';
 //import loadjscssfile from './loadScript';
 import APILoader from './APILoader'
 
+//const xdebug = console.log;
+const xdebug = () => {};
+
 export const loadApi = (key = '0325e3d6d69cd56de4980b4f28906fd8') => {
   return new APILoader({
     key,
@@ -62,9 +65,9 @@ export const loadMap = key => {
 /**
  * [加载插件](https://lbs.amap.com/api/javascript-api/guide/abc/plugins)
  * 加载完成后,可以调用:
- *  var toolbar = new AMap.ToolBar();
+ *  var toolbar = new window.AMap.ToolBar();
  *  map.addControl(toolbar);
- * @param {string} name 插件名或插件数组,如:AMap.ToolBar,['AMap.ToolBar','AMap.Driving']
+ * @param {string} name 插件名或插件数组,如:window.AMap.ToolBar,['AMap.ToolBar','AMap.Driving']
  */
 export const loadPlugin = name => {
   return new Promise((resolve, reject) => {
@@ -80,28 +83,9 @@ export const loadPlugin = name => {
 };
 
 ////////////////////////////////////////////////////////////
-// Map
+// 工具方法
 ////////////////////////////////////////////////////////////
-export const createMap = (AMap, dom, options, events) => {
-  const __func__ = 'createMap';
-  if (!AMap) {
-    console.log(__func__, 'fail! no AMap!');
-    return null;
-  }
-  if (!dom) {
-    console.log(__func__, 'fail! no dom!');
-    return null;
-  }
-  let map = new AMap.Map(dom, { ...(options || {}) });
-  forOwn(events, (value, key) => {
-    console.log(__func__, 'event on ' + key);
-    map.on(key, value);
-  });
-  console.log(__func__, 'ok!');
-  return map;
-};
-
-export const commonUpdate = (
+const commonUpdate = (
   entity,
   newOptions,
   newEvents,
@@ -112,7 +96,7 @@ export const commonUpdate = (
 ) => {
   // const __func__ = 'commonUpdate';
   if (!entity) {
-    console.log(__func__, 'fail! no entity!');
+    xdebug(__func__, 'fail! no entity!');
     return false;
   }
 
@@ -190,11 +174,11 @@ export const commonUpdate = (
         func(value);
       } else {
         // ignore properties can not set.
-        console.log(__func__, 'warning! no setter! can not update ' + key);
+        xdebug(__func__, 'warning! no setter! can not update ' + key);
       }
     } else {
       // key removed, not support!
-      console.log(__func__, 'warning! remove prop not support! key=' + key);
+      xdebug(__func__, 'warning! remove prop not support! key=' + key);
     }
   });
   forOwn(events, (value, key) => {
@@ -207,7 +191,7 @@ export const commonUpdate = (
     }
   });
   if (!isEmpty(props) || !isEmpty(events)) {
-    console.log(
+    xdebug(
       __func__, 'update:',
       props,
       events,
@@ -218,6 +202,28 @@ export const commonUpdate = (
     );
   }
   return true;
+};
+
+////////////////////////////////////////////////////////////
+// Map
+////////////////////////////////////////////////////////////
+export const createMap = (dom, options, events) => {
+  const __func__ = 'createMap';
+  if (!window.AMap) {
+    xdebug(__func__, 'fail! no window.AMap!');
+    return null;
+  }
+  if (!dom) {
+    xdebug(__func__, 'fail! no dom!');
+    return null;
+  }
+  let map = new window.AMap.Map(dom, { ...(options || {}) });
+  forOwn(events, (value, key) => {
+    xdebug(__func__, 'event on ' + key);
+    map.on(key, value);
+  });
+  xdebug(__func__, 'ok!');
+  return map;
 };
 
 export const updateMap = (
@@ -284,18 +290,18 @@ export const updateMap = (
  * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
  * @param {*} events
  */
-export const createMarker = (AMap, options, events) => {
+export const createMarker = (options, events) => {
   const __func__ = 'createMarker';
-  if (!AMap) {
-    console.log(__func__, 'fail! no AMap!');
+  if (!window.AMap) {
+    xdebug(__func__, 'fail! no window.AMap!');
     return null;
   }
   if (!options) {
-    console.log(__func__, 'fail! no options!');
+    xdebug(__func__, 'fail! no options!');
     return null;
   }
   if (!options.map) {
-    console.log(__func__, 'fail! no options.map!');
+    xdebug(__func__, 'fail! no options.map!');
     return null;
   }
   // let marker = new AMap.Marker({
@@ -303,11 +309,11 @@ export const createMarker = (AMap, options, events) => {
   //   position: [116.405467, 39.907761]
   // });
   // marker.setMap(map);
-  let entity = new AMap.Marker(options);
+  let entity = new window.AMap.Marker(options);
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
-  console.log(__func__, 'ok!');
+  xdebug(__func__, 'ok!');
   return entity;
 };
 
@@ -363,19 +369,19 @@ export const updateMarker = (
  * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
  * @param {*} events
  */
-export const createTraffic = (AMap, options, events) => {
+export const createTraffic = (options, events) => {
   const __func__ = 'createTraffic';
-  if (!AMap || !options || !options.map) {
-    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+  if (!window.AMap || !options || !options.map) {
+    xdebug(__func__, 'fail! parameters!', 'window.AMap:'+!!window.AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
   let {map, data, ...restOpts} = options;
-  let entity = new AMap.TileLayer.Traffic(data, restOpts);
+  let entity = new window.AMap.TileLayer.Traffic(data, restOpts);
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
   entity.setMap(map);
-  console.log(__func__, 'ok!');
+  xdebug(__func__, 'ok!');
   return entity;
 };
 
@@ -417,19 +423,19 @@ export const updateTraffic = (
  * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
  * @param {*} events
  */
-export const createMassMarks = (AMap, options, events) => {
+export const createMassMarks = (options, events) => {
   const __func__ = 'createMassMarks';
-  if (!AMap || !options || !options.map) {
-    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+  if (!window.AMap || !options || !options.map) {
+    xdebug(__func__, 'fail! parameters!', 'window.AMap:'+!!window.AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
-  let {map, data, ...restOpts} = options;
-  let entity = new AMap.MassMarks(data, restOpts);
+  let {map, data, style, ...restOpts} = options;
+  let entity = new window.AMap.MassMarks(data||[], {...restOpts, style: style||[]});
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
   entity.setMap(map);
-  console.log(__func__, 'ok!');
+  xdebug(__func__, 'ok!', map, 'layers:', map.getLayers());
   return entity;
 };
 
@@ -447,9 +453,15 @@ export const updateMassMarks = (
     cursor: v => entity.setCursor(v),
     alwaysRender: null,
     style: v => entity.setStyle(v),
-    map: v => entity.setMap(v),
-    data: v=> entity.setData(v)
+    map: v => {
+      xdebug('updateMassMarks', 'setMap', v, 'layers:', (v && v.getLayers()));
+      entity.setMap(v)
+    },
+    data: v=> {
+      entity.setData(v);
+    }
   };
+  xdebug('updateMassMarks', 'mapOld:', (oldOptions && oldOptions.map && oldOptions.map.getLayers()), 'mapNew:', (newOptions && newOptions.map && newOptions.map.getLayers()));
 
   return commonUpdate (
     entity,
@@ -472,17 +484,17 @@ export const updateMassMarks = (
  * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
  * @param {*} events
  */
-export const createPolygon = (AMap, options, events) => {
+export const createPolygon = (options, events) => {
   const __func__ = 'createPolygon';
-  if (!AMap || !options || !options.map) {
-    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+  if (!window.AMap || !options || !options.map) {
+    xdebug(__func__, 'fail! parameters!', 'window.AMap:'+!!window.AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
-  let entity = new AMap.Polygon(options);
+  let entity = new window.AMap.Polygon(options);
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
-  console.log(__func__, 'ok!');
+  xdebug(__func__, 'ok!');
   return entity;
 };
 
@@ -532,17 +544,17 @@ export const updatePolygon = (
  * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
  * @param {*} events
  */
-export const createPolyline = (AMap, options, events) => {
+export const createPolyline = (options, events) => {
   const __func__ = 'createPolyline';
-  if (!AMap || !options || !options.map) {
-    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+  if (!window.AMap || !options || !options.map) {
+    xdebug(__func__, 'fail! parameters!', 'window.AMap:'+!!window.AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
-  let entity = new AMap.Polyline(options);
+  let entity = new window.AMap.Polyline(options);
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
-  console.log(__func__, 'ok!');
+  xdebug(__func__, 'ok!');
   return entity;
 };
 
@@ -597,17 +609,17 @@ export const updatePolyline = (
  * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
  * @param {*} events
  */
-export const createInfoWindow = (AMap, options, events) => {
+export const createInfoWindow = (options, events) => {
   const __func__ = 'createInfoWindow';
-  if (!AMap || !options || !options.map) {
-    console.log(__func__, 'fail! parameters!', 'AMap:'+!!AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+  if (!window.AMap || !options || !options.map) {
+    xdebug(__func__, 'fail! parameters!', 'window.AMap:'+!!window.AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
-  let entity = new AMap.InfoWindow(options);
+  let entity = new window.AMap.InfoWindow(options);
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
-  console.log(__func__, 'ok!');
+  xdebug(__func__, 'ok!');
   return entity;
 };
 

@@ -7,7 +7,6 @@ const debug = () => {};
 
 export class Marker extends Component {
   static propTypes = {
-    AMap: PropTypes.object,
     __map__: PropTypes.object,
     options: PropTypes.object,
     events: PropTypes.object
@@ -33,10 +32,10 @@ export class Marker extends Component {
 
   componentDidMount() {
     debug(__com__, 'componentDidMount', this.props.children, this._entity);
-    let { AMap, __map__, options, events, children } = this.props;
+    let { __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
-    this._entity = createMarker(AMap, opts, events);
+    this._entity = createMarker(opts, events);
     if (this._entity) {
       if (this.props.refer) this.props.refer(this._entity);
     }
@@ -52,11 +51,11 @@ export class Marker extends Component {
 
   componentDidUpdate(prevProps) {
     debug(__com__, 'componentDidUpdate', this.props.children, this._entity);
-    let { AMap, __map__, options, events, children } = this.props;
+    let { __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
     if (!this._entity) {
-      this._entity = createMarker(AMap, opts, events);
+      this._entity = createMarker(opts, events);
       if (this._entity) {
         if (this.props.refer) this.props.refer(this._entity);
       }
@@ -78,8 +77,6 @@ export class Marker extends Component {
       //   this._entity.clearMap();
       this._entity.stopMove();
       this._entity.setMap(null);
-      delete this._entity;
-      //   delete this._entity;
       this._entity = null;
       if (this.props.refer) this.props.refer(this._entity);
     }
@@ -97,22 +94,8 @@ export class Marker extends Component {
   //   return true;
   // }
   render() {
-    debug(__com__, 'render', this.props.children, this._entity);
-    let {
-      AMap,
-      options,
-      events,
-      match,
-      location,
-      history,
-      staticContext,
-      ...rest
-    } = this.props;
+    debug(__com__, 'render', this._entity);
     return null;
-    // return (
-    //   <React.Fragment>
-    //   </React.Fragment>
-    // )
   }
 }
 

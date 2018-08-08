@@ -8,7 +8,6 @@ const debug = () => {};
 // https://lbs.amap.com/api/javascript-api/reference/infowindow
 export class InfoWindow extends Component {
   static propTypes = {
-    AMap: PropTypes.object,
     __map__: PropTypes.object,
     options: PropTypes.object,
     events: PropTypes.object
@@ -23,19 +22,25 @@ export class InfoWindow extends Component {
 
   componentDidMount() {
     debug(__com__, 'componentDidMount', this._entity);
-    let { AMap, __map__, options, events, children } = this.props;
+    let { __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
-    this._entity = createInfoWindow(AMap, opts, events);
+    this._entity = createInfoWindow(opts, events);
+    if (this._entity) {
+      if (this.props.refer) this.props.refer(this._entity);
+    }
   }
 
   componentDidUpdate(prevProps) {
     debug(__com__, 'componentDidUpdate', this._entity);
-    let { AMap, __map__, options, events, children } = this.props;
+    let { __map__, options, events, children } = this.props;
     //let opts = { ...(options || {}), map: __map__, content: children };
     let opts = { ...(options || {}), map: __map__ };
     if (!this._entity) {
-      this._entity = createInfoWindow(AMap, opts, events);
+      this._entity = createInfoWindow(opts, events);
+      if (this._entity) {
+        if (this.props.refer) this.props.refer(this._entity);
+      }
       return;
     }
 
@@ -52,9 +57,9 @@ export class InfoWindow extends Component {
     if (this._entity) {
       //   this._entity.clearMap();
       this._entity.setMap(null);
-      delete this._entity;
-      //   delete this._entity;
+      // delete this._entity;
       this._entity = null;
+      if (this.props.refer) this.props.refer(this._entity);
     }
   }
 
@@ -64,21 +69,7 @@ export class InfoWindow extends Component {
   // }
   render() {
     debug(__com__, 'render', this._entity);
-    let {
-      AMap,
-      options,
-      events,
-      match,
-      location,
-      history,
-      staticContext,
-      ...rest
-    } = this.props;
     return null;
-    // return (
-    //   <React.Fragment>
-    //   </React.Fragment>
-    // )
   }
 }
 
