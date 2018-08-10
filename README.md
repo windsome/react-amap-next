@@ -23,17 +23,30 @@ componentDidMount() {
 render() {
   return (
   <Map refer={} AMap={this.state.AMap} style={{width:1200, height:800}} options={{}} events={{}} >
+    <Marker
+      refer={(entity) => this.setState({carEntity: entity})}
+      options={{
+        position: [116.397428, 39.90923],
+        icon: "https://webapi.amap.com/images/car.png",
+        offset: this.state.carOffset,
+        autoRotation: true
+      }}
+      events={{
+        moving:this._carMoving
+      }}
+    />
   </Map>
   )
 }
 ```
-或者直接下载,将源码添加进自己的项目中
+
+## 测试用例
+例子请参考`src/App.js`,
 ```
 git clone https://github.com/windsome/react-amap-next
-yarn install
+yarn install # npm install
 npm start
 ```
-例子请参考`src/App.js`,
 
 ## 方案介绍
 1. `api.js`为amap相关的操作,主要包含高德js的加载及各种组件的创建及更新方法.
