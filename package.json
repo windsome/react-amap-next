@@ -1,6 +1,6 @@
 {
   "name": "react-amap-next",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "这是高德地图的react版本,相比react-amap更加简单,更加贴合react用户",
   "keywords": [
     "react",

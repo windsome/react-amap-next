@@ -5,8 +5,8 @@ import isEmpty from 'lodash/isEmpty';
 //import loadjscssfile from './loadScript';
 import APILoader from './APILoader'
 
-//const xdebug = console.log;
-const xdebug = () => {};
+const xdebug = console.log;
+// const xdebug = () => {};
 
 export const loadApi = (key = '0325e3d6d69cd56de4980b4f28906fd8') => {
   return new APILoader({
@@ -375,8 +375,8 @@ export const createTraffic = (options, events) => {
     xdebug(__func__, 'fail! parameters!', 'window.AMap:'+!!window.AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
     return null;
   }
-  let {map, data, ...restOpts} = options;
-  let entity = new window.AMap.TileLayer.Traffic(data, restOpts);
+  let {map, ...restOpts} = options;
+  let entity = new window.AMap.TileLayer.Traffic(restOpts);
   forOwn(events, (value, key) => {
     entity.on(key, value);
   });
@@ -400,6 +400,7 @@ export const updateTraffic = (
     detectRetina: null,
     autoRefresh: null,
     interval: null,
+    tileUrl: v => entity.setTileUrl(v), // not in options.
   };
 
   return commonUpdate (
@@ -473,6 +474,63 @@ export const updateMassMarks = (
     'updateMassMarks'
   )
 };
+
+// ////////////////////////////////////////////////////////////
+// // Traffic, warning! is a layer!
+// ////////////////////////////////////////////////////////////
+// /**
+//  *
+//  * @param {*} window.AMap
+//  * @param {*} map
+//  * @param {*} options 如果有dom用来显示,则其中的content字段即被填充为dom,不再用独立参数表示dom
+//  * @param {*} events
+//  */
+// export const createTraffic = (options, events) => {
+//   const __func__ = 'createTraffic';
+//   if (!window.AMap || !options || !options.map) {
+//     xdebug(__func__, 'fail! parameters!', 'window.AMap:'+!!window.AMap, 'options:'+!!options, 'options.map:'+!!(options&&options.map));
+//     return null;
+//   }
+//   let {map, data, style, ...restOpts} = options;
+// //   let entity = new window.AMap.TileLayer.Traffic(data, restOpts);
+// let entity = new window.AMap.Traffic(data||[], {...restOpts, style: style||[]});
+//   forOwn(events, (value, key) => {
+//     entity.on(key, value);
+//   });
+//   entity.setMap(map);
+//   xdebug(__func__, 'ok!', map, 'layers:', map.getLayers());
+//   return entity;
+// };
+
+// export const updateTraffic = (
+//   entity,
+//   newOptions,
+//   newEvents,
+//   oldOptions,
+//   oldEvents
+// ) => {
+//   let operators = {
+//     map: v => entity.setMap(v),
+//     zIndex: v => entity.setzIndex(v),
+//     opacity: v => entity.setOpacity(v),
+//     zooms: null,
+//     detectRetina: null,
+//     autoRefresh: null,
+//     interval: null,
+//     tileUrl: v => entity.setTileUrl(v), // not in options.
+//   };
+//   xdebug('updateTraffic', 'mapOld:', (oldOptions && oldOptions.map && oldOptions.map.getLayers()), 'mapNew:', (newOptions && newOptions.map && newOptions.map.getLayers()));
+
+//   return commonUpdate (
+//     entity,
+//     newOptions,
+//     newEvents,
+//     oldOptions,
+//     oldEvents,
+//     operators,
+//     'updateTraffic'
+//   )
+// };
 
 ////////////////////////////////////////////////////////////
 // Polygon

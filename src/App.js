@@ -7,6 +7,7 @@ import { loadMap } from './lib/api';
 import Map from './lib/Map';
 import Marker from './lib/Marker';
 import MassMarks from './lib/MassMarks';
+import LayerTraffic from './lib/LayerTraffic';
 import Polygon from './lib/Polygon';
 import Polyline from './lib/Polyline';
 import InfoWindow from './lib/InfoWindow';
@@ -15,6 +16,7 @@ class MarkerTest extends Component {
   constructor() {
     super();
     this.state = {};
+    this._setMapRefer = this._setMapRefer.bind(this);
     this._mapDblclick = this._mapDblclick.bind(this);
     this._carMoving = this._carMoving.bind(this);
     this._logging = this._logging.bind(this);
@@ -43,8 +45,11 @@ class MarkerTest extends Component {
       }
   
       let carOffset = new AMap.Pixel(-26, -13);
-      this.setState({ AMap, layers: [roadNet, traffic], lineArr, carOffset });
+      this.setState({ AMap, lineArr, carOffset });
     });
+  }
+  _setMapRefer (refer) {
+    this.mapRefer = refer;
   }
 
   _mapDblclick() {
@@ -58,6 +63,14 @@ class MarkerTest extends Component {
   }
 
   render() {
+    console.log('mapRefer:', this.mapRefer && this.mapRefer.getLayers());
+    let markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+    switch (this.state.markerIndex) {
+      case 1: markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png'; break;
+      case 2: markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png'; break;
+      default:
+      case 0: markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png'; break;
+    }
     return (
       <div>
       <div>
@@ -88,6 +101,15 @@ class MarkerTest extends Component {
           </span>
         </div>
         <div style={{margin:2}}>
+          <span style={{marginRight:2}}>改Marker图标:</span>
+          <span onClick={() => this.setState({ markerIndex:0 })}>
+            Marker-0
+          </span>
+          <span onClick={() => this.setState({ markerIndex:1 })}>
+            Marker-1
+          </span>
+        </div>
+        <div style={{margin:2}}>
           <input style={{margin:2, padding:2}} type='button' onClick={() => {
             if (this.state.carEntity) this.state.carEntity.moveAlong(this.state.lineArr, 1500);
           }} value='开始' />
@@ -105,17 +127,19 @@ class MarkerTest extends Component {
           {'消息:'+this.state.msg}
         </div>
         <Map
+          refer={this._setMapRefer}
           style={{ width: 1200, height: 800 }}
-          options={{ center: this.state.center, layers: this.state.layers, zoom:13 }}
+          options={{ center: this.state.center, zoom:13 }}
           events={{
             click:this._logging,
             dblclick: this._mapDblclick,
           }}
       >
+          <LayerTraffic options={{ interval:20,opacity:0.8 }} />
           {this.state.showMarker &&
           <Marker
             options={{
-              icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
+              icon: markerIcon,
               position: this.state.position || [116.405467, 39.907761]
             }}
             events={{
