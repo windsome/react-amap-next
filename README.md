@@ -57,10 +57,11 @@ npm start
 6. `Polygon.js`为多边形控件,可以用来画行政区域图
 7. `Polyline.js`为多折点线组件,可以用来模拟汽车行驶轨迹
 8. `InfoWindow.js`为InfoWindow组件,可以用来显示弹出框
-9. 其他组件,有待添加.
+9. `LayerTraffic.js`为LayerTraffic组件,可以用来显示交通层
+10. 其他组件,有待添加.
 
 ## 注意事项
-1. `loadScript.js`是用来加载js和css的,希望能确保加载文件的唯一性,可以参考requirejs的实现机制改掉.
+1. `loadScript.js`是用来加载js和css的,希望能确保加载文件的唯一性,可以参考requirejs的实现机制改掉.注意:这里已经用react-amap的加载方式替换了.
 2. 与`react-amap`的不同之处,加载高德地图js与`Map`,`Marker`等组件是分离的.
 
 ## 已知问题

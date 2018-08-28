@@ -17,6 +17,76 @@ class MarkerTest extends Component {
     super();
     this.state = {};
     this._setMapRefer = this._setMapRefer.bind(this);
+    this._setMarkerRefer = this._setMarkerRefer.bind(this);
+  }
+
+  componentDidMount() {
+    loadMap('0325e3d6d69cd56de4980b4f28906fd8').then(AMap => {
+      this.setState({ AMap });
+    });
+  }
+  _setMapRefer (refer) {
+    this.mapRefer = refer;
+    window.$map = this.mapRefer;
+    console.log('_setMapRefer:', this.mapRefer, this.markerRefer);
+  }
+  _setMarkerRefer (refer) {
+    this.markerRefer = refer;
+    window.$marker = this.markerRefer;
+    console.log('_setMarkerRefer:', this.mapRefer, this.markerRefer);
+  }
+
+  render() {
+    let center = [116.39, 39.9];
+    window.$map = this.mapRefer;
+    window.$marker = this.markerRefer;
+    console.log('render:', this.mapRefer, this.markerRefer);
+    let markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+    switch (this.state.markerIndex) {
+      case 1: markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png'; break;
+      case 2: markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png'; break;
+      default:
+      case 0: markerIcon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png'; break;
+    }
+    return (
+      <div>
+      <div>
+        <div style={{margin:2}}>
+          <span style={{marginRight:2}}>改Marker图标:</span>
+          <span onClick={() => this.setState({ markerIndex:0 })}>
+            Marker-0
+          </span>
+          <span onClick={() => this.setState({ markerIndex:1 })}>
+            Marker-1
+          </span>
+        </div>
+        <Map
+          refer={this._setMapRefer}
+          style={{ width: 1200, height: 800 }}
+          options={{ center, zoom:13 }}
+        >
+          <LayerTraffic options={{ interval:20,opacity:0.8 }} />
+          <Marker
+            refer={this._setMarkerRefer}
+            options={{
+              icon: markerIcon,
+              position: center
+            }}
+          />
+        </Map>
+      </div>
+      </div>
+    );
+  }
+
+}
+
+
+class MarkerCarMoveTest extends Component {
+  constructor() {
+    super();
+    this.state = {};
+    this._setMapRefer = this._setMapRefer.bind(this);
     this._mapDblclick = this._mapDblclick.bind(this);
     this._carMoving = this._carMoving.bind(this);
     this._logging = this._logging.bind(this);
@@ -208,7 +278,6 @@ class MarkerTest extends Component {
   }
 
 }
-
 
 class MassMarkTest extends Component {
   constructor() {
@@ -510,6 +579,7 @@ class App extends Component {
       <div>
         <div>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'marker')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'marker'})}> MarkerTest </span>
+          <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'markercarmove')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'markercarmove'})}> 移动的汽车(MarkerCarMoveTest) </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'massmarks')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'massmarks'})}> MassMarksTest </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'polygon')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'polygon'})}> PolygonTest </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'infowindow')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'infowindow'})}> InfoWindowTest </span>
@@ -517,6 +587,9 @@ class App extends Component {
         <div>
           {this.state.test === 'marker' &&
           <MarkerTest />
+          }
+          {this.state.test === 'markercarmove' &&
+          <MarkerCarMoveTest />
           }
           {this.state.test === 'massmarks' &&
           <MassMarkTest />

@@ -193,6 +193,7 @@ const commonUpdate = (
   if (!isEmpty(props) || !isEmpty(events)) {
     xdebug(
       __func__, 'update:',
+      entity,
       props,
       events,
       // newOptions,
@@ -328,7 +329,7 @@ export const updateMarker = (
     map: v => entity.setMap(v),
     position: v => entity.setPosition(v),
     offset: v => entity.setOffset(v),
-    icon: v => entity.setIcon(v),
+    icon: v => { setTimeout(()=> entity.setIcon(v),0); }, // 这里有一个bug,在某些时候页面更改icon时,界面上并不生效.
     content: v => entity.setContent(v),
     topWhenClick: null,
     bubble: null,
