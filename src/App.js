@@ -572,9 +572,7 @@ class CircleTest extends Component {
               fillOpacity: 0.35,//填充透明度
               }}
             events={{
-              click:e=> {
-                this.setState({msg: '点击了Circle:'+JSON.stringify(e.data)})
-              }
+              click:this._mapClick
             }}
           />
         </Map>
