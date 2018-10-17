@@ -10,6 +10,7 @@ import MassMarks from './lib/MassMarks';
 import LayerTraffic from './lib/LayerTraffic';
 import Polygon from './lib/Polygon';
 import Polyline from './lib/Polyline';
+import Circle from './lib/Circle';
 import InfoWindow from './lib/InfoWindow';
 
 class MarkerTest extends Component {
@@ -506,6 +507,83 @@ class PolygonTest extends Component {
   }
 }
 
+class CircleTest extends Component {
+  constructor() {
+    super();
+    this.state = {};
+  }
+
+  componentDidMount() {
+    loadMap('0325e3d6d69cd56de4980b4f28906fd8').then(AMap => {
+      let roadNet = new AMap.TileLayer.RoadNet();
+      let traffic = new AMap.TileLayer.Traffic({
+        autoRefresh: true, //是否自动刷新，默认为false
+        interval: 15 //刷新间隔，默认180s
+      });
+  
+      this.setState({ AMap, layers: [roadNet, traffic], center: [116.403322, 39.920255], radius: 1000 });
+    });
+  }
+
+  _mapDblclick = (e) => {
+    let center = [e.lnglat.getLng(), e.lnglat.getLat()];
+    this.setState({msg:'双击了Map!', center});
+  }
+  _mapClick = (e) => {
+    let center = [e.lnglat.getLng(), e.lnglat.getLat()];
+    this.setState({msg:'双击了Map!', center});
+  }
+  _changeRadius200 = () => {
+    this.setState({radius:500})
+  }
+  _changeRadius1000 = () => {
+    this.setState({radius:2000})
+  }
+
+  render() {
+    let { center, radius} = this.state;
+    return (
+      <div>
+      <div>
+        <div style={{margin:2}}>
+          <span style={{marginRight:2}}>改变半径radius:</span>
+          <input type='button' onClick={this._changeRadius200} value='radius200' />
+          <input type='button' onClick={this._changeRadius1000} value='radius1000' />
+        </div>
+        <div style={{margin:2}}>
+          {'消息:'+this.state.msg}
+        </div>
+        <Map
+          style={{ width: 1100, height: 800 }}
+          options={{ center: this.state.center, layers: this.state.layers }}
+          events={{
+            click: this._mapClick,
+            dblclick: this._mapDblclick,
+          }}
+      >
+          <Circle
+            options={{
+              center,
+              radius,
+              strokeColor: "#FF33FF", //线颜色
+              strokeOpacity: 0.2, //线透明度
+              strokeWeight: 3,    //线宽
+              fillColor: "#1791fc", //填充色
+              fillOpacity: 0.35,//填充透明度
+              }}
+            events={{
+              click:e=> {
+                this.setState({msg: '点击了Circle:'+JSON.stringify(e.data)})
+              }
+            }}
+          />
+        </Map>
+      </div>
+      </div>
+    );
+  }
+}
+
 class InfoWindowTest extends Component {
   constructor() {
     super();
@@ -582,6 +660,7 @@ class App extends Component {
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'markercarmove')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'markercarmove'})}> 移动的汽车(MarkerCarMoveTest) </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'massmarks')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'massmarks'})}> MassMarksTest </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'polygon')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'polygon'})}> PolygonTest </span>
+          <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'circle')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'circle'})}> CircleTest </span>
           <span style={{padding:5, margin: 5, backgroundColor:(this.state.test === 'infowindow')?'#ff0':'#fff'}} onClick={()=>this.setState({test: 'infowindow'})}> InfoWindowTest </span>
         </div>
         <div>
@@ -596,6 +675,9 @@ class App extends Component {
           }
           {this.state.test === 'polygon' &&
           <PolygonTest />
+          }
+          {this.state.test === 'circle' &&
+          <CircleTest />
           }
           {this.state.test === 'infowindow' &&
           <InfoWindowTest />
