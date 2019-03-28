@@ -1,6 +1,6 @@
 {
   "name": "react-amap-next",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "这是高德地图的react版本,相比react-amap更加简单,更加贴合react用户",
   "keywords": [
     "react",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-scripts": "2.0.5"

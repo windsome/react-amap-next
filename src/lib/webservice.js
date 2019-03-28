@@ -353,8 +353,10 @@ export const infocode = {
   },
 }
 
-export const getRequest = (service, parameters, body) => {
-  if (!service) return null;
+export const getRequest = (serviceId, parameters, body) => {
+  if (!serviceId) return null;
+  
+  let service = services[serviceId];
 
   let option = {};
   let { name, url, method, parameters: dfParameters, body: dfBody } = service;
